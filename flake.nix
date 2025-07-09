@@ -16,9 +16,34 @@
     flake-utils.lib.eachSystem supportedSystems (
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
+
+        # Final derivation including any overrides made to output package
+        finalDrv = self.packages.${system}.build-zig-utils;
       in {
         packages = {
-          patch-local-dep = pkgs.callPackage ./patch-local-dep {};
+          build-zig-utils = pkgs.callPackage ./. {};
+          default = finalDrv;
+
+          lib = {
+            applyLocalDepPatch = {
+              src,
+              dependency,
+              path,
+            }:
+              pkgs.stdenvNoCC.mkDerivation {
+                name = "patched-local-dep-source";
+                inherit src;
+
+                buildPhase = ''
+                  ${finalDrv}/bin/patch-local-dep.awk ${dependency} ${path} ${src}/build.zig.zon > ${src}/build.zig.zon
+                '';
+
+                installPhase = ''
+                  mkdir $out
+                  mv * $out/
+                '';
+              };
+          };
         };
 
         formatter = pkgs.alejandra;

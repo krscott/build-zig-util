@@ -3,7 +3,7 @@
   gawk,
 }:
 stdenvNoCC.mkDerivation {
-  name = "patch-local-dep";
+  name = "build-zig-utils";
   src = ./.;
 
   buildInputs = [gawk];
