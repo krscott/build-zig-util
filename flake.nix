@@ -35,7 +35,7 @@
                 inherit src;
 
                 buildPhase = ''
-                  ${finalDrv}/bin/patch-local-dep.awk ${dependency} ${path} ${src}/build.zig.zon > ${src}/build.zig.zon
+                  ${finalDrv}/bin/patch-local-dep.awk ${dependency} ${path} ${src}/build.zig.zon > build.zig.zon
                 '';
 
                 installPhase = ''
